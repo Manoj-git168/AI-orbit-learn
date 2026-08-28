@@ -1,0 +1,64 @@
+// Prisma schema for AI Orbit Learn
+
+generator client {
+  provider = "prisma-client"
+  output   = "../app/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum ResourceType {
+  Course
+  Guide
+  Ebook
+  Tutorial
+  Roadmap
+}
+
+enum ResourceLevel {
+  Beginner
+  Intermediate
+  Advanced
+}
+
+enum ResourcePrice {
+  Free
+  Paid
+}
+
+model Resource {
+  id               String         @id
+  slug             String         @unique
+  title            String
+  description      String
+  overview         String
+  learningOutcomes String[]
+  type             ResourceType
+  category         String
+  tags             String[]
+  provider         String
+  author           String
+  level            ResourceLevel
+  duration         String
+  format           String
+  price            ResourcePrice
+  rating           Float
+  reviewCount      Int
+  thumbnail        String
+  websiteUrl       String
+  featured         Boolean        @default(false)
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @updatedAt
+
+  savedResources   SavedResource[]
+}
+
+model SavedResource {
+  id         String   @id @default(cuid())
+  resourceId String   @unique
+  createdAt  DateTime @default(now())
+
+  resource   Resource @relation(fields: [resourceId], references: [id], onDelete: Cascade)
+}
